@@ -1,0 +1,26 @@
+From d22bfa87fbf9ead036ffc8d21e037bcb76944dab Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>
+Date: Fri, 21 Oct 2022 00:39:42 +0200
+Subject: [PATCH] platform/linux: Use right unit in WantedBy
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Turns out the sys-devices-virtual-net unit is only created for virtual
+network devices. Use the sys-subsystem-net-devices unit instead as that is
+created for any type of net device.
+
+Fixes #153.
+
+Signed-off-by: Toke Høiland-Jørgensen <toke@toke.dk>
+
+diff --git a/platform/linux/sqm@.service b/platform/linux/sqm@.service
+index 828ffd3..b543dd8 100644
+--- a/platform/linux/sqm@.service
++++ b/platform/linux/sqm@.service
+@@ -15,4 +15,4 @@ ExecStop=/usr/lib/sqm/stop-sqm
+ RemainAfterExit=1
+ 
+ [Install]
+-WantedBy=sys-devices-virtual-net-%i.device
++WantedBy=sys-subsystem-net-devices-%i.device

@@ -1,0 +1,19 @@
+#!/sbin/openrc-run
+# Copyright 2022 Enéas Ulir de Queiroz
+# SPDX-License-Identifier: GPL-2.0-or-later
+
+depend() {
+	need net
+}
+
+start() {
+	ebegin "Starting sqm-scripts"
+	/usr/lib/sqm/start-sqm
+	eend $?
+}
+
+stop() {
+	ebegin "Stopping sqm-scripts"
+	/usr/lib/sqm/stop-sqm
+	eend $?
+}
