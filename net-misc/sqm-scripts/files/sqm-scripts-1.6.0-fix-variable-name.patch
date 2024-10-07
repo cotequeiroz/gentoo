@@ -1,0 +1,29 @@
+From 95337de67a35b474d493966223f324eb1302adfc Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>
+Date: Mon, 3 Jun 2024 09:16:19 +0200
+Subject: [PATCH] functions.sh: Fix variable name
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Use the right variable name when calculating minimum quantum. Notices by Github
+user @dave14305
+
+Signed-off-by: Toke Høiland-Jørgensen <toke@toke.dk>
+---
+ src/functions.sh | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/functions.sh b/src/functions.sh
+index 37a2465..3f301cf 100644
+--- a/src/functions.sh
++++ b/src/functions.sh
+@@ -598,7 +598,7 @@ get_htb_quantum() {
+     fi
+ 
+     if [ -z "$QUANTUM" ]; then
+-	MIN_QUANTUM=$(( ${MTU} + 48 ))	# add 48 bytes to MTU for the  ovehead
++	MIN_QUANTUM=$(( ${HTB_MTU} + 48 ))	# add 48 bytes to MTU for the  ovehead
+ 	MIN_QUANTUM=$(( ${MIN_QUANTUM} + 47 ))	# now do ceil(Min_BURST / 48) * 53 in shell integer arithmic
+ 	MIN_QUANTUM=$(( ${MIN_QUANTUM} / 48 ))
+ 	MIN_QUANTUM=$(( ${MIN_QUANTUM} * 53 ))	# for MTU 1489 to 1536 this will result in MIN_BURST = 1749 Bytes

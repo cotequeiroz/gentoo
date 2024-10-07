@@ -1,0 +1,75 @@
+From 0325ba47045e82faef9794b9e702dbb673cfe18d Mon Sep 17 00:00:00 2001
+From: Sebastian Moeller <moeller0@gmx.de>
+Date: Sat, 17 Feb 2024 13:35:19 +0100
+Subject: [PATCH] Add nat to the default [IN|E]GRESS_CAKE_OPTS in defaults.sh
+
+Also change piece_of_cake.qos to evaluate [IN|E]GRESS_CAKE_OPTS
+
+Signed-off-by: Sebastian Moeller <moeller0@gmx.de>
+---
+ src/defaults.sh       | 4 ++--
+ src/piece_of_cake.qos | 8 +++++---
+ 2 files changed, 7 insertions(+), 5 deletions(-)
+
+diff --git a/src/defaults.sh b/src/defaults.sh
+index 4e57abe..253315b 100644
+--- a/src/defaults.sh
++++ b/src/defaults.sh
+@@ -54,8 +54,8 @@ fi
+ [ -z "$IPT_MASK" ] && IPT_MASK="0xff" # to disable: set mask to 0xffffffff
+ #sm: we need the functions above before trying to set the ingress IFB device
+ #sm: *_CAKE_OPTS should contain the diffserv keyword for cake
+-[ -z "$INGRESS_CAKE_OPTS" ] && INGRESS_CAKE_OPTS="diffserv3"
+-[ -z "$EGRESS_CAKE_OPTS" ] && EGRESS_CAKE_OPTS="diffserv3"
++[ -z "$INGRESS_CAKE_OPTS" ] && INGRESS_CAKE_OPTS="diffserv3 nat"
++[ -z "$EGRESS_CAKE_OPTS" ] && EGRESS_CAKE_OPTS="diffserv3 nat"
+ 
+ [ -z "$CUR_DIRECTION" ] && CUR_DIRECTION="NONE"
+ 
+diff --git a/src/piece_of_cake.qos b/src/piece_of_cake.qos
+index ac65eda..8cdb9a9 100644
+--- a/src/piece_of_cake.qos
++++ b/src/piece_of_cake.qos
+@@ -13,9 +13,11 @@
+ QDISC=cake
+ 
+ 
+-# to keep this as simple as possible we ignore the *_CAKE_OPTS from defaults.sh
+-INGRESS_CAKE_OPTS="besteffort"
+-EGRESS_CAKE_OPTS="besteffort"
++# to keep this as simple as possible we append the *_CAKE_OPTS from defaults.sh
++# since cake will always just keep the last instance of competing keywords this
++# will effectively override defaults.sh's diffservX
++INGRESS_CAKE_OPTS="${INGRESS_CAKE_OPTS} besteffort"
++EGRESS_CAKE_OPTS="${EGRESSS_CAKE_OPTS} besteffort"
+ 
+ 
+ egress() {
+From 424184d55db476a3816426da3d1c0e4bae728798 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>
+Date: Sat, 1 Jun 2024 00:46:51 +0200
+Subject: [PATCH] piece_of_cake.qos: Fix typo in variable name
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+s/EGRESSS/EGRESS/ - one too many s'es.
+
+Signed-off-by: Toke Høiland-Jørgensen <toke@toke.dk>
+---
+ src/piece_of_cake.qos | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/piece_of_cake.qos b/src/piece_of_cake.qos
+index 8cdb9a9..ecc4bfa 100644
+--- a/src/piece_of_cake.qos
++++ b/src/piece_of_cake.qos
+@@ -17,7 +17,7 @@ QDISC=cake
+ # since cake will always just keep the last instance of competing keywords this
+ # will effectively override defaults.sh's diffservX
+ INGRESS_CAKE_OPTS="${INGRESS_CAKE_OPTS} besteffort"
+-EGRESS_CAKE_OPTS="${EGRESSS_CAKE_OPTS} besteffort"
++EGRESS_CAKE_OPTS="${EGRESS_CAKE_OPTS} besteffort"
+ 
+ 
+ egress() {
